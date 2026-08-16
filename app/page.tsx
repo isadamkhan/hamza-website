@@ -486,11 +486,6 @@ export default function LandingPage() {
                   </p>
 
                   <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                    {/* <button className="flex items-center justify-center gap-3 bg-[#f2b705] px-7 py-4 text-xs font-black uppercase tracking-wide text-black transition hover:bg-white">
-                      Browse Parts
-                      <ChevronRight className="h-4 w-4" />
-                    </button> */}
-
                     <button
                       type="button"
                       onClick={scrollToProducts}
@@ -666,11 +661,10 @@ export default function LandingPage() {
                   {paginatedProducts.map((product) => (
                     <div
                       key={product.id}
-                      className="group overflow-hidden border border-neutral-200 bg-white transition duration-300 hover:-translate-y-1 hover:border-neutral-300 hover:shadow-xl"
+                      className="group overflow-hidden border border-neutral-200 bg-white transition duration-300 hover:border-[#f2b705] hover:shadow-none"
                     >
                       {/* Image */}
-
-                      <div className="relative flex aspect-square items-center justify-center overflow-hidden bg-[#f4f4f2]">
+                      <div className="relative aspect-[5/4] w-full overflow-hidden bg-[#f4f4f2]">
                         <div
                           className="absolute inset-0 opacity-40"
                           style={{
@@ -683,17 +677,16 @@ export default function LandingPage() {
                         <img
                           src={product.image}
                           alt={product.name}
-                          className="relative h-full w-full object-contain p-5 transition duration-500 group-hover:scale-105"
+                          className="relative h-full w-full object-contain p-0"
                           loading="lazy"
                         />
 
-                        <span className="absolute left-3 top-3 bg-[#171717] px-2 py-1 text-[9px] font-black text-white">
+                        <span className="absolute left-3 top-3 border-l-4 border-[#f2b705] bg-[#171717] px-2 py-1 text-[9px] font-black text-white">
                           IN STOCK
                         </span>
                       </div>
 
                       {/* Information */}
-
                       <div className="p-4">
                         <div className="mb-2 flex items-center gap-2 text-[9px] font-bold uppercase tracking-wide text-neutral-400">
                           <span>Heavy Equipment</span>
@@ -706,20 +699,6 @@ export default function LandingPage() {
                         <p className="mt-2 line-clamp-2 min-h-[32px] text-[10px] leading-4 text-neutral-500">
                           {product.description}
                         </p>
-
-                        {/* <div className="mt-4">
-                          <div className="text-base font-black">
-                            {formatPKR(product.price)}
-                          </div>
-                        </div> */}
-
-                        {/* <button
-                          onClick={() => addToCart(product.name)}
-                          className="mt-4 flex h-10 w-full items-center justify-center gap-2 bg-[#171717] text-[10px] font-black uppercase tracking-wide text-white transition hover:bg-[#f2b705] hover:text-black"
-                        >
-                          <ShoppingCart className="h-3.5 w-3.5" />
-                          Add to cart
-                        </button> */}
                       </div>
                     </div>
                   ))}
