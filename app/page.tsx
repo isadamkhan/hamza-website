@@ -317,13 +317,13 @@ export default function LandingPage() {
                 <Wrench className="h-5 w-5 text-[#171717]" />
               </div> */}
 
-              <div className="hidden sm:block">
-                <div className="text-[18px] font-black uppercase tracking-tight">
+              <div className="min-w-0">
+                <div className="truncate text-[15px] font-black uppercase leading-tight tracking-tight sm:text-[18px]">
                   Hamza
                   <span className="text-[#d99f00]"> Enterprises</span>
                 </div>
 
-                <div className="text-[9px] font-bold tracking-[0.2em] text-neutral-500">
+                <div className="hidden text-[9px] font-bold tracking-[0.2em] text-neutral-500 sm:block">
                   HEAVY EQUIPMENT PARTS
                 </div>
               </div>
@@ -378,7 +378,7 @@ export default function LandingPage() {
                 </span>
               </a>
 
-              {/* <button className="relative flex h-11 w-11 items-center justify-center border border-neutral-200 transition hover:border-[#d99f00]">
+              <button className="relative flex h-11 w-11 items-center justify-center border border-neutral-200 transition hover:border-[#d99f00]">
                 <ShoppingCart className="h-[18px] w-[18px]" />
 
                 {cartCount > 0 && (
@@ -386,7 +386,7 @@ export default function LandingPage() {
                     {cartCount}
                   </span>
                 )}
-              </button> */}
+              </button>
 
               <button
                 onClick={() => setMobileMenu(!mobileMenu)}
