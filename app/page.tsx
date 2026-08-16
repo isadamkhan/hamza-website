@@ -63,6 +63,7 @@ export default function LandingPage() {
   const [error, setError] = useState("");
   const [cartCount, setCartCount] = useState(0);
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [mobileMenu, setMobileMenu] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -103,8 +104,8 @@ export default function LandingPage() {
 
         const formattedProducts: Product[] = apiProducts.map((product) => ({
           id: product._id,
-          name: product.title,
-          description: product.description,
+          name: product.title || "Unnamed Part",
+          description: product.description || "",
           price: product.price,
           image: product.imageUrl,
           createdAt: product.createdAt,
@@ -127,26 +128,69 @@ export default function LandingPage() {
 
   /*
    * ============================
-   * SEARCH
+   * SEARCH — debounce input so filtering a 1,000+ item
+   * list doesn't run on every single keystroke
    * ============================
    */
 
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 250);
+
+    return () => clearTimeout(timeout);
+  }, [search]);
+
+  const scrollToProducts = () => {
+    document
+      .getElementById("products-section")
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  /*
+   * ============================
+   * SEARCH — filtering
+   * ============================
+   */
+
+  // Pre-compute lowercase name/description once whenever the product list
+  // changes, instead of re-running toLowerCase() on every item on every
+  // keystroke. Falls back to empty strings so a missing field never crashes
+  // the filter.
+  const searchIndex = useMemo(
+    () =>
+      products.map((product) => ({
+        product,
+        nameLower: (product.name || "").toLowerCase(),
+        descLower: (product.description || "").toLowerCase(),
+      })),
+    [products],
+  );
+
   const filteredProducts = useMemo(() => {
-    const query = search.trim().toLowerCase();
+    const query = debouncedSearch.trim().toLowerCase();
 
     if (!query) return products;
 
-    return products.filter(
-      (product) =>
-        product.name.toLowerCase().includes(query) ||
-        product.description.toLowerCase().includes(query),
-    );
-  }, [products, search]);
+    return searchIndex
+      .filter(
+        ({ nameLower, descLower }) =>
+          nameLower.includes(query) || descLower.includes(query),
+      )
+      .map(({ product }) => product);
+  }, [searchIndex, products, debouncedSearch]);
 
   // Reset to page 1 whenever the search query (or underlying product list) changes
   useEffect(() => {
     setCurrentPage(1);
-  }, [search, products.length]);
+
+    // Jump down to the results once the debounced search actually fires,
+    // so the person isn't left staring at the hero section wondering
+    // where their results went.
+    if (debouncedSearch.trim()) {
+      scrollToProducts();
+    }
+  }, [debouncedSearch, products.length]);
 
   /*
    * ============================
@@ -169,9 +213,7 @@ export default function LandingPage() {
     setCurrentPage(clamped);
 
     // Scroll back up to the top of the products section for better UX
-    document
-      .getElementById("products-section")
-      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    scrollToProducts();
   };
 
   // Builds a compact page list like: 1 ... 4 5 [6] 7 8 ... 24
@@ -286,11 +328,24 @@ export default function LandingPage() {
                   type="text"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      setDebouncedSearch(search);
+                      scrollToProducts();
+                    }
+                  }}
                   placeholder="Search by part name or description..."
                   className="h-11 w-full border border-neutral-300 bg-neutral-50 pl-11 pr-28 text-sm outline-none transition focus:border-[#d99f00] focus:bg-white"
                 />
 
-                <button className="absolute right-0 top-0 flex h-11 items-center gap-2 bg-[#171717] px-5 text-xs font-bold text-white transition hover:bg-[#d99f00] hover:text-black">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDebouncedSearch(search);
+                    scrollToProducts();
+                  }}
+                  className="absolute right-0 top-0 flex h-11 items-center gap-2 bg-[#171717] px-5 text-xs font-bold text-white transition hover:bg-[#d99f00] hover:text-black"
+                >
                   SEARCH
                 </button>
               </div>
@@ -312,7 +367,7 @@ export default function LandingPage() {
                 </span>
               </a>
 
-              {/* <button className="relative flex h-11 w-11 items-center justify-center border border-neutral-200 transition hover:border-[#d99f00]">
+              <button className="relative flex h-11 w-11 items-center justify-center border border-neutral-200 transition hover:border-[#d99f00]">
                 <ShoppingCart className="h-[18px] w-[18px]" />
 
                 {cartCount > 0 && (
@@ -320,7 +375,7 @@ export default function LandingPage() {
                     {cartCount}
                   </span>
                 )}
-              </button> */}
+              </button>
 
               <button
                 onClick={() => setMobileMenu(!mobileMenu)}
@@ -377,6 +432,13 @@ export default function LandingPage() {
               <input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    setDebouncedSearch(search);
+                    setMobileMenu(false);
+                    scrollToProducts();
+                  }
+                }}
                 placeholder="Search parts..."
                 className="h-11 w-full border border-neutral-300 bg-neutral-50 pl-10 text-sm outline-none"
               />
@@ -542,7 +604,9 @@ export default function LandingPage() {
                 <p className="mt-2 text-sm text-neutral-500">
                   {loading
                     ? "Loading inventory..."
-                    : `${filteredProducts.length} products available`}
+                    : search !== debouncedSearch
+                      ? "Searching..."
+                      : `${filteredProducts.length} products available`}
                 </p>
               </div>
 
