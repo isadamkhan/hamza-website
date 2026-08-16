@@ -231,7 +231,9 @@ export default function LandingPage() {
 
             <div className="ml-auto flex items-center gap-2">
               <a
-                href="#"
+                href="https://wa.me/923359068724"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="hidden items-center gap-2 border border-neutral-200 px-4 py-2.5 text-xs font-bold transition hover:border-[#d99f00] sm:flex"
               >
                 <MessageCircle className="h-4 w-4" />
