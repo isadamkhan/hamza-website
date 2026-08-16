@@ -378,7 +378,7 @@ export default function LandingPage() {
                 </span>
               </a>
 
-              <button className="relative flex h-11 w-11 items-center justify-center border border-neutral-200 transition hover:border-[#d99f00]">
+              {/* <button className="relative flex h-11 w-11 items-center justify-center border border-neutral-200 transition hover:border-[#d99f00]">
                 <ShoppingCart className="h-[18px] w-[18px]" />
 
                 {cartCount > 0 && (
@@ -386,7 +386,7 @@ export default function LandingPage() {
                     {cartCount}
                   </span>
                 )}
-              </button>
+              </button> */}
 
               <button
                 onClick={() => setMobileMenu(!mobileMenu)}
