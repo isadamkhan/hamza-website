@@ -67,8 +67,6 @@ export default function LandingPage() {
   const [mobileMenu, setMobileMenu] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const API_URL = "http://185.255.93.161:3000/api/products";
-
   /*
    * ============================
    * FETCH PRODUCTS

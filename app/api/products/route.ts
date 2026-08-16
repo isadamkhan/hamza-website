@@ -1,12 +1,20 @@
 import { NextResponse } from "next/server";
 
-const API_URL = "http://185.255.93.161:3000/api/products";
+const BACKEND_API_URL = process.env.BACKEND_API_URL;
 
-export const revalidate = 3600; // 1 hour
+export const revalidate = 86400; // 1 day
 
 export async function GET() {
+  if (!BACKEND_API_URL) {
+    console.error("Missing BACKEND_API_URL environment variable");
+    return NextResponse.json(
+      { error: "Server misconfiguration" },
+      { status: 500 },
+    );
+  }
+
   try {
-    const response = await fetch(API_URL, {
+    const response = await fetch(`${BACKEND_API_URL}/api/products`, {
       next: {
         revalidate: 86400,
       },
