@@ -583,13 +583,13 @@ export default function LandingPage() {
                         </div>
                       </div> */}
 
-                      <button
+                      {/* <button
                         onClick={() => addToCart(product.name)}
                         className="mt-4 flex h-10 w-full items-center justify-center gap-2 bg-[#171717] text-[10px] font-black uppercase tracking-wide text-white transition hover:bg-[#f2b705] hover:text-black"
                       >
                         <ShoppingCart className="h-3.5 w-3.5" />
                         Add to cart
-                      </button>
+                      </button> */}
                     </div>
                   </div>
                 ))}
