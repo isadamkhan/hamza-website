@@ -7,19 +7,18 @@ import {
   Mail,
   MapPin,
   ShoppingCart,
-  Search,
   ChevronRight,
   ArrowUpRight,
   ShieldCheck,
   Truck,
   PackageCheck,
   Wrench,
-  Menu,
   X,
   CircleCheck,
   Loader2,
   AlertCircle,
   ChevronLeft,
+  Search,
 } from "lucide-react";
 
 type ApiProduct = {
@@ -373,18 +372,10 @@ export default function LandingPage() {
                 aria-label="Chat on WhatsApp"
               >
                 <WhatsAppIcon className="h-[18px] w-[18px]" />
-                <span className="hidden text-[#171717] sm:inline">WhatsApp</span>
+                <span className="hidden text-[#171717] sm:inline">
+                  WhatsApp
+                </span>
               </a>
-
-              {/* <button className="relative flex h-11 w-11 items-center justify-center border border-neutral-200 transition hover:border-[#d99f00]">
-                <ShoppingCart className="h-[18px] w-[18px]" />
-
-                {cartCount > 0 && (
-                  <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#f2b705] text-[10px] font-black">
-                    {cartCount}
-                  </span>
-                )}
-              </button> */}
 
               <button
                 onClick={() => setMobileMenu(!mobileMenu)}
@@ -393,7 +384,7 @@ export default function LandingPage() {
                 {mobileMenu ? (
                   <X className="h-5 w-5" />
                 ) : (
-                  <Menu className="h-5 w-5" />
+                  <Search className="h-5 w-5" />
                 )}
               </button>
             </div>
@@ -495,7 +486,16 @@ export default function LandingPage() {
                   </p>
 
                   <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                    <button className="flex items-center justify-center gap-3 bg-[#f2b705] px-7 py-4 text-xs font-black uppercase tracking-wide text-black transition hover:bg-white">
+                    {/* <button className="flex items-center justify-center gap-3 bg-[#f2b705] px-7 py-4 text-xs font-black uppercase tracking-wide text-black transition hover:bg-white">
+                      Browse Parts
+                      <ChevronRight className="h-4 w-4" />
+                    </button> */}
+
+                    <button
+                      type="button"
+                      onClick={scrollToProducts}
+                      className="flex items-center justify-center gap-3 bg-[#f2b705] px-7 py-4 text-xs font-black uppercase tracking-wide text-black transition hover:bg-white"
+                    >
                       Browse Parts
                       <ChevronRight className="h-4 w-4" />
                     </button>
@@ -576,7 +576,10 @@ export default function LandingPage() {
 
         {/* ================= PRODUCTS ================= */}
 
-        <section id="products-section" className="border-y border-neutral-200 bg-white">
+        <section
+          id="products-section"
+          className="border-y border-neutral-200 bg-white"
+        >
           <div className="mx-auto max-w-[1400px] px-5 py-16 lg:px-6">
             <div className="mb-10 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
               <div>
@@ -919,7 +922,7 @@ export default function LandingPage() {
 
                 <div className="flex items-center gap-3">
                   <Mail className="h-4 w-4 text-[#f2b705]" />
-                  sales@hamzaenterprises.pk
+                  hamzaenterprises062@gmail.com
                 </div>
 
                 <div className="flex items-start gap-3">
