@@ -19,6 +19,7 @@ import {
   CircleCheck,
   Loader2,
   AlertCircle,
+  ChevronLeft,
 } from "lucide-react";
 
 type ApiProduct = {
@@ -42,6 +43,8 @@ type Product = {
   createdAt: string;
 };
 
+const PRODUCTS_PER_PAGE = 12;
+
 export default function LandingPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -49,6 +52,7 @@ export default function LandingPage() {
   const [cartCount, setCartCount] = useState(0);
   const [search, setSearch] = useState("");
   const [mobileMenu, setMobileMenu] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const API_URL = "http://185.255.93.161:3000/api/products";
 
@@ -126,6 +130,59 @@ export default function LandingPage() {
         product.description.toLowerCase().includes(query),
     );
   }, [products, search]);
+
+  // Reset to page 1 whenever the search query (or underlying product list) changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, products.length]);
+
+  /*
+   * ============================
+   * PAGINATION
+   * ============================
+   */
+
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE),
+  );
+
+  const paginatedProducts = useMemo(() => {
+    const start = (currentPage - 1) * PRODUCTS_PER_PAGE;
+    return filteredProducts.slice(start, start + PRODUCTS_PER_PAGE);
+  }, [filteredProducts, currentPage]);
+
+  const goToPage = (page: number) => {
+    const clamped = Math.min(Math.max(page, 1), totalPages);
+    setCurrentPage(clamped);
+
+    // Scroll back up to the top of the products section for better UX
+    document
+      .getElementById("products-section")
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  // Builds a compact page list like: 1 ... 4 5 [6] 7 8 ... 24
+  const pageNumbers = useMemo(() => {
+    const delta = 1;
+    const range: (number | "...")[] = [];
+    const left = Math.max(2, currentPage - delta);
+    const right = Math.min(totalPages - 1, currentPage + delta);
+
+    range.push(1);
+
+    if (left > 2) range.push("...");
+
+    for (let i = left; i <= right; i++) {
+      range.push(i);
+    }
+
+    if (right < totalPages - 1) range.push("...");
+
+    if (totalPages > 1) range.push(totalPages);
+
+    return range;
+  }, [currentPage, totalPages]);
 
   /*
    * ============================
@@ -452,7 +509,7 @@ export default function LandingPage() {
 
         {/* ================= PRODUCTS ================= */}
 
-        <section className="border-y border-neutral-200 bg-white">
+        <section id="products-section" className="border-y border-neutral-200 bg-white">
           <div className="mx-auto max-w-[1400px] px-5 py-16 lg:px-6">
             <div className="mb-10 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
               <div>
@@ -532,68 +589,137 @@ export default function LandingPage() {
             {/* Products */}
 
             {!loading && !error && filteredProducts.length > 0 && (
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
-                {filteredProducts.map((product) => (
-                  <div
-                    key={product.id}
-                    className="group overflow-hidden border border-neutral-200 bg-white transition duration-300 hover:-translate-y-1 hover:border-neutral-300 hover:shadow-xl"
-                  >
-                    {/* Image */}
+              <>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
+                  {paginatedProducts.map((product) => (
+                    <div
+                      key={product.id}
+                      className="group overflow-hidden border border-neutral-200 bg-white transition duration-300 hover:-translate-y-1 hover:border-neutral-300 hover:shadow-xl"
+                    >
+                      {/* Image */}
 
-                    <div className="relative flex aspect-square items-center justify-center overflow-hidden bg-[#f4f4f2]">
-                      <div
-                        className="absolute inset-0 opacity-40"
-                        style={{
-                          backgroundImage:
-                            "radial-gradient(#d4d4d4 1px, transparent 1px)",
-                          backgroundSize: "14px 14px",
-                        }}
-                      />
+                      <div className="relative flex aspect-square items-center justify-center overflow-hidden bg-[#f4f4f2]">
+                        <div
+                          className="absolute inset-0 opacity-40"
+                          style={{
+                            backgroundImage:
+                              "radial-gradient(#d4d4d4 1px, transparent 1px)",
+                            backgroundSize: "14px 14px",
+                          }}
+                        />
 
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="relative h-full w-full object-contain p-5 transition duration-500 group-hover:scale-105"
-                        loading="lazy"
-                      />
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className="relative h-full w-full object-contain p-5 transition duration-500 group-hover:scale-105"
+                          loading="lazy"
+                        />
 
-                      <span className="absolute left-3 top-3 bg-[#171717] px-2 py-1 text-[9px] font-black text-white">
-                        IN STOCK
-                      </span>
-                    </div>
-
-                    {/* Information */}
-
-                    <div className="p-4">
-                      <div className="mb-2 flex items-center gap-2 text-[9px] font-bold uppercase tracking-wide text-neutral-400">
-                        <span>Heavy Equipment</span>
+                        <span className="absolute left-3 top-3 bg-[#171717] px-2 py-1 text-[9px] font-black text-white">
+                          IN STOCK
+                        </span>
                       </div>
 
-                      <h3 className="min-h-[42px] text-sm font-bold leading-5 text-neutral-800 transition group-hover:text-[#b38300]">
-                        {product.name}
-                      </h3>
+                      {/* Information */}
 
-                      <p className="mt-2 line-clamp-2 min-h-[32px] text-[10px] leading-4 text-neutral-500">
-                        {product.description}
-                      </p>
-
-                      {/* <div className="mt-4">
-                        <div className="text-base font-black">
-                          {formatPKR(product.price)}
+                      <div className="p-4">
+                        <div className="mb-2 flex items-center gap-2 text-[9px] font-bold uppercase tracking-wide text-neutral-400">
+                          <span>Heavy Equipment</span>
                         </div>
-                      </div> */}
 
-                      {/* <button
-                        onClick={() => addToCart(product.name)}
-                        className="mt-4 flex h-10 w-full items-center justify-center gap-2 bg-[#171717] text-[10px] font-black uppercase tracking-wide text-white transition hover:bg-[#f2b705] hover:text-black"
+                        <h3 className="min-h-[42px] text-sm font-bold leading-5 text-neutral-800 transition group-hover:text-[#b38300]">
+                          {product.name}
+                        </h3>
+
+                        <p className="mt-2 line-clamp-2 min-h-[32px] text-[10px] leading-4 text-neutral-500">
+                          {product.description}
+                        </p>
+
+                        {/* <div className="mt-4">
+                          <div className="text-base font-black">
+                            {formatPKR(product.price)}
+                          </div>
+                        </div> */}
+
+                        {/* <button
+                          onClick={() => addToCart(product.name)}
+                          className="mt-4 flex h-10 w-full items-center justify-center gap-2 bg-[#171717] text-[10px] font-black uppercase tracking-wide text-white transition hover:bg-[#f2b705] hover:text-black"
+                        >
+                          <ShoppingCart className="h-3.5 w-3.5" />
+                          Add to cart
+                        </button> */}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Pagination */}
+
+                {totalPages > 1 && (
+                  <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-neutral-200 pt-8 sm:flex-row">
+                    <p className="text-xs text-neutral-500">
+                      Showing{" "}
+                      <span className="font-bold text-neutral-800">
+                        {(currentPage - 1) * PRODUCTS_PER_PAGE + 1}
+                      </span>
+                      {"–"}
+                      <span className="font-bold text-neutral-800">
+                        {Math.min(
+                          currentPage * PRODUCTS_PER_PAGE,
+                          filteredProducts.length,
+                        )}
+                      </span>{" "}
+                      of{" "}
+                      <span className="font-bold text-neutral-800">
+                        {filteredProducts.length}
+                      </span>
+                    </p>
+
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        onClick={() => goToPage(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className="flex h-9 w-9 items-center justify-center border border-neutral-200 text-neutral-600 transition hover:border-[#d99f00] disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-neutral-200"
+                        aria-label="Previous page"
                       >
-                        <ShoppingCart className="h-3.5 w-3.5" />
-                        Add to cart
-                      </button> */}
+                        <ChevronLeft className="h-4 w-4" />
+                      </button>
+
+                      {pageNumbers.map((page, index) =>
+                        page === "..." ? (
+                          <span
+                            key={`ellipsis-${index}`}
+                            className="flex h-9 w-9 items-center justify-center text-xs text-neutral-400"
+                          >
+                            …
+                          </span>
+                        ) : (
+                          <button
+                            key={page}
+                            onClick={() => goToPage(page)}
+                            className={`flex h-9 w-9 items-center justify-center border text-xs font-bold transition ${
+                              page === currentPage
+                                ? "border-[#171717] bg-[#171717] text-white"
+                                : "border-neutral-200 text-neutral-600 hover:border-[#d99f00]"
+                            }`}
+                          >
+                            {page}
+                          </button>
+                        ),
+                      )}
+
+                      <button
+                        onClick={() => goToPage(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        className="flex h-9 w-9 items-center justify-center border border-neutral-200 text-neutral-600 transition hover:border-[#d99f00] disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-neutral-200"
+                        aria-label="Next page"
+                      >
+                        <ChevronRight className="h-4 w-4" />
+                      </button>
                     </div>
                   </div>
-                ))}
-              </div>
+                )}
+              </>
             )}
           </div>
         </section>
@@ -719,7 +845,7 @@ export default function LandingPage() {
               <div className="mt-6 space-y-3 text-xs">
                 <div className="flex items-center gap-3">
                   <Phone className="h-4 w-4 text-[#f2b705]" />
-                  +92 3XX XXXXXXX
+                  +92 335 9068724
                 </div>
 
                 <div className="flex items-center gap-3">
