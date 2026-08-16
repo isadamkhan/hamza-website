@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import {
   Phone,
@@ -301,10 +302,20 @@ export default function LandingPage() {
           <div className="flex h-[78px] items-center gap-5">
             {/* Logo */}
 
-            <div className="flex shrink-0 items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center bg-[#f2b705] shadow-[4px_4px_0_#171717]">
+            <Link
+              href="/"
+              onClick={() => {
+                setSearch("");
+                setDebouncedSearch("");
+                setCurrentPage(1);
+                setMobileMenu(false);
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+              className="flex shrink-0 items-center gap-3"
+            >
+              {/* <div className="flex h-11 w-11 items-center justify-center bg-[#f2b705] shadow-[4px_4px_0_#171717]">
                 <Wrench className="h-5 w-5 text-[#171717]" />
-              </div>
+              </div> */}
 
               <div className="hidden sm:block">
                 <div className="text-[18px] font-black uppercase tracking-tight">
@@ -316,7 +327,7 @@ export default function LandingPage() {
                   HEAVY EQUIPMENT PARTS
                 </div>
               </div>
-            </div>
+            </Link>
 
             {/* Search */}
 
@@ -367,7 +378,7 @@ export default function LandingPage() {
                 </span>
               </a>
 
-              <button className="relative flex h-11 w-11 items-center justify-center border border-neutral-200 transition hover:border-[#d99f00]">
+              {/* <button className="relative flex h-11 w-11 items-center justify-center border border-neutral-200 transition hover:border-[#d99f00]">
                 <ShoppingCart className="h-[18px] w-[18px]" />
 
                 {cartCount > 0 && (
@@ -375,7 +386,7 @@ export default function LandingPage() {
                     {cartCount}
                   </span>
                 )}
-              </button>
+              </button> */}
 
               <button
                 onClick={() => setMobileMenu(!mobileMenu)}
