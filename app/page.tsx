@@ -373,9 +373,7 @@ export default function LandingPage() {
                 aria-label="Chat on WhatsApp"
               >
                 <WhatsAppIcon className="h-[18px] w-[18px]" />
-                <span className="hidden text-[#171717] sm:inline">
-                  WhatsApp
-                </span>
+                <span className="hidden text-[#171717] sm:inline">WhatsApp</span>
               </a>
 
               {/* <button className="relative flex h-11 w-11 items-center justify-center border border-neutral-200 transition hover:border-[#d99f00]">
@@ -437,7 +435,7 @@ export default function LandingPage() {
 
         {mobileMenu && (
           <div className="border-t border-neutral-200 bg-white p-5 md:hidden">
-            <div className="relative mb-4">
+            <div className="relative">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" />
 
               <input
@@ -453,25 +451,6 @@ export default function LandingPage() {
                 placeholder="Search parts..."
                 className="h-11 w-full border border-neutral-300 bg-neutral-50 pl-10 text-sm outline-none"
               />
-            </div>
-
-            <div className="grid grid-cols-2 gap-2">
-              {[
-                "All Products",
-                "New Arrivals",
-                "Best Sellers",
-                "Heavy Equipment",
-                "Bearings",
-                "Hydraulics",
-              ].map((item) => (
-                <button
-                  key={item}
-                  className="border border-neutral-200 p-3 text-left text-xs font-bold"
-                  onClick={() => setMobileMenu(false)}
-                >
-                  {item}
-                </button>
-              ))}
             </div>
           </div>
         )}
@@ -597,10 +576,7 @@ export default function LandingPage() {
 
         {/* ================= PRODUCTS ================= */}
 
-        <section
-          id="products-section"
-          className="border-y border-neutral-200 bg-white"
-        >
+        <section id="products-section" className="border-y border-neutral-200 bg-white">
           <div className="mx-auto max-w-[1400px] px-5 py-16 lg:px-6">
             <div className="mb-10 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
               <div>
