@@ -151,10 +151,6 @@ export default function LandingPage() {
    * ============================
    */
 
-  // Pre-compute lowercase name/description once whenever the product list
-  // changes, instead of re-running toLowerCase() on every item on every
-  // keystroke. Falls back to empty strings so a missing field never crashes
-  // the filter.
   const searchIndex = useMemo(
     () =>
       products.map((product) => ({
@@ -178,13 +174,9 @@ export default function LandingPage() {
       .map(({ product }) => product);
   }, [searchIndex, products, debouncedSearch]);
 
-  // Reset to page 1 whenever the search query (or underlying product list) changes
   useEffect(() => {
     setCurrentPage(1);
 
-    // Jump down to the results once the debounced search actually fires,
-    // so the person isn't left staring at the hero section wondering
-    // where their results went.
     if (debouncedSearch.trim()) {
       scrollToProducts();
     }
@@ -210,11 +202,9 @@ export default function LandingPage() {
     const clamped = Math.min(Math.max(page, 1), totalPages);
     setCurrentPage(clamped);
 
-    // Scroll back up to the top of the products section for better UX
     scrollToProducts();
   };
 
-  // Builds a compact page list like: 1 ... 4 5 [6] 7 8 ... 24
   const pageNumbers = useMemo(() => {
     const delta = 1;
     const range: (number | "...")[] = [];
@@ -310,10 +300,6 @@ export default function LandingPage() {
               }}
               className="flex shrink-0 items-center gap-3"
             >
-              {/* <div className="flex h-11 w-11 items-center justify-center bg-[#f2b705] shadow-[4px_4px_0_#171717]">
-                <Wrench className="h-5 w-5 text-[#171717]" />
-              </div> */}
-
               <div className="min-w-0">
                 <div className="truncate text-[15px] font-black uppercase leading-tight tracking-tight sm:text-[18px]">
                   Hamza
@@ -397,17 +383,28 @@ export default function LandingPage() {
                 <span className="absolute bottom-0 left-0 h-[3px] w-full bg-[#f2b705]" />
               </button>
 
-              <span className="text-neutral-500">New Arrivals</span>
+              <Link
+                href="/repair-service"
+                className="text-neutral-500 transition hover:text-[#d99f00]"
+              >
+                Repair Service
+              </Link>
 
-              <span className="text-neutral-500">Best Sellers</span>
-
-              <span className="text-neutral-500">Heavy Equipment</span>
-
-              <span className="text-neutral-500">Bearings</span>
-
-              <span className="text-neutral-500">Hydraulics</span>
+              <Link
+                href="/undercarriage"
+                className="text-neutral-500 transition hover:text-[#d99f00]"
+              >
+                Undercarriage
+              </Link>
 
               <span className="ml-auto h-5 w-px bg-neutral-200" />
+
+              <Link
+                href="/about"
+                className="text-neutral-500 transition hover:text-[#d99f00]"
+              >
+                About
+              </Link>
 
               <a
                 href="#"
@@ -441,6 +438,33 @@ export default function LandingPage() {
                 className="h-11 w-full border border-neutral-300 bg-neutral-50 pl-10 text-sm outline-none"
               />
             </div>
+
+            <Link
+              href="/repair-service"
+              onClick={() => setMobileMenu(false)}
+              className="mt-4 flex items-center justify-between border border-neutral-200 px-4 py-3 text-xs font-bold uppercase tracking-wide text-neutral-700 hover:border-[#d99f00] hover:text-[#d99f00]"
+            >
+              Repair Service
+              <ChevronRight className="h-4 w-4" />
+            </Link>
+
+            <Link
+              href="/undercarriage"
+              onClick={() => setMobileMenu(false)}
+              className="mt-2 flex items-center justify-between border border-neutral-200 px-4 py-3 text-xs font-bold uppercase tracking-wide text-neutral-700 hover:border-[#d99f00] hover:text-[#d99f00]"
+            >
+              Undercarriage
+              <ChevronRight className="h-4 w-4" />
+            </Link>
+
+            <Link
+              href="/about"
+              onClick={() => setMobileMenu(false)}
+              className="mt-2 flex items-center justify-between border border-neutral-200 px-4 py-3 text-xs font-bold uppercase tracking-wide text-neutral-700 hover:border-[#d99f00] hover:text-[#d99f00]"
+            >
+              About
+              <ChevronRight className="h-4 w-4" />
+            </Link>
           </div>
         )}
       </header>
@@ -913,28 +937,28 @@ export default function LandingPage() {
               {
                 title: "Company",
                 links: [
-                  "About Us",
-                  "Full Catalogue",
-                  "Bulk Orders",
-                  "Import & LC Process",
+                  { label: "About Us", href: "/about" },
+                  { label: "Full Catalogue", href: "/" },
+                  { label: "Repair Service", href: "/repair-service" },
+                  { label: "Undercarriage", href: "/undercarriage" },
                 ],
               },
               {
                 title: "Customer Service",
                 links: [
-                  "Help Center",
-                  "Returns & Warranty",
-                  "Shipping Information",
-                  "FAQs",
+                  { label: "Help Center", href: "#" },
+                  { label: "Returns & Warranty", href: "#" },
+                  { label: "Shipping Information", href: "#" },
+                  { label: "FAQs", href: "#" },
                 ],
               },
               {
                 title: "Information",
                 links: [
-                  "Privacy Policy",
-                  "Terms of Service",
-                  "Quality Guarantee",
-                  "Contact Us",
+                  { label: "Privacy Policy", href: "#" },
+                  { label: "Terms of Service", href: "#" },
+                  { label: "Quality Guarantee", href: "#" },
+                  { label: "Contact Us", href: "#" },
                 ],
               },
             ].map((column) => (
@@ -945,13 +969,13 @@ export default function LandingPage() {
 
                 <ul className="space-y-3">
                   {column.links.map((link) => (
-                    <li key={link}>
-                      <a
-                        href="#"
+                    <li key={link.label}>
+                      <Link
+                        href={link.href}
                         className="text-xs transition hover:text-[#f2b705]"
                       >
-                        {link}
-                      </a>
+                        {link.label}
+                      </Link>
                     </li>
                   ))}
                 </ul>
