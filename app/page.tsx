@@ -16,31 +16,11 @@ import {
   CircleCheck,
   Loader2,
   AlertCircle,
-  ChevronLeft,
   Search,
   Menu,
 } from "lucide-react";
-
-type ApiProduct = {
-  _id: string;
-  title: string;
-  description: string;
-  price: number;
-  size: string;
-  imageUrl: string;
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
-};
-
-type Product = {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  image: string;
-  createdAt: string;
-};
+import type { ApiProduct, Product } from "./types";
+import ProductGrid from "./components/ProductGrid";
 
 const PRODUCTS_PER_PAGE = 12;
 
@@ -192,11 +172,6 @@ export default function LandingPage() {
     1,
     Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE),
   );
-
-  const paginatedProducts = useMemo(() => {
-    const start = (currentPage - 1) * PRODUCTS_PER_PAGE;
-    return filteredProducts.slice(start, start + PRODUCTS_PER_PAGE);
-  }, [filteredProducts, currentPage]);
 
   const goToPage = (page: number) => {
     const clamped = Math.min(Math.max(page, 1), totalPages);
@@ -701,124 +676,17 @@ export default function LandingPage() {
               </div>
             )}
 
-            {/* Products */}
+            {/* Products — extracted into ProductGrid (which renders ProductCard per item) */}
 
             {!loading && !error && filteredProducts.length > 0 && (
-              <>
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
-                  {paginatedProducts.map((product) => (
-                    <div
-                      key={product.id}
-                      className="group overflow-hidden border border-neutral-200 bg-white transition duration-300 hover:border-[#f2b705] hover:shadow-none"
-                    >
-                      {/* Image */}
-                      <div className="relative aspect-[5/4] w-full overflow-hidden bg-[#f4f4f2]">
-                        <div
-                          className="absolute inset-0 opacity-40"
-                          style={{
-                            backgroundImage:
-                              "radial-gradient(#d4d4d4 1px, transparent 1px)",
-                            backgroundSize: "14px 14px",
-                          }}
-                        />
-
-                        <img
-                          src={product.image}
-                          alt={product.name}
-                          className="relative h-full w-full object-contain p-0"
-                          loading="lazy"
-                        />
-
-                        <span className="absolute left-3 top-3 border-l-4 border-[#f2b705] bg-[#171717] px-2 py-1 text-[9px] font-black text-white">
-                          IN STOCK
-                        </span>
-                      </div>
-
-                      {/* Information */}
-                      <div className="p-4">
-                        <div className="mb-2 flex items-center gap-2 text-[9px] font-bold uppercase tracking-wide text-neutral-400">
-                          <span>Heavy Equipment</span>
-                        </div>
-
-                        <h3 className="min-h-[42px] text-sm font-bold leading-5 text-neutral-800 transition group-hover:text-[#b38300]">
-                          {product.name}
-                        </h3>
-
-                        <p className="mt-2 line-clamp-2 min-h-[32px] text-[10px] leading-4 text-neutral-500">
-                          {product.description}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Pagination */}
-
-                {totalPages > 1 && (
-                  <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-neutral-200 pt-8 sm:flex-row">
-                    <p className="text-xs text-neutral-500">
-                      Showing{" "}
-                      <span className="font-bold text-neutral-800">
-                        {(currentPage - 1) * PRODUCTS_PER_PAGE + 1}
-                      </span>
-                      {"–"}
-                      <span className="font-bold text-neutral-800">
-                        {Math.min(
-                          currentPage * PRODUCTS_PER_PAGE,
-                          filteredProducts.length,
-                        )}
-                      </span>{" "}
-                      of{" "}
-                      <span className="font-bold text-neutral-800">
-                        {filteredProducts.length}
-                      </span>
-                    </p>
-
-                    <div className="flex items-center gap-1.5">
-                      <button
-                        onClick={() => goToPage(currentPage - 1)}
-                        disabled={currentPage === 1}
-                        className="flex h-9 w-9 items-center justify-center border border-neutral-200 text-neutral-600 transition hover:border-[#d99f00] disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-neutral-200"
-                        aria-label="Previous page"
-                      >
-                        <ChevronLeft className="h-4 w-4" />
-                      </button>
-
-                      {pageNumbers.map((page, index) =>
-                        page === "..." ? (
-                          <span
-                            key={`ellipsis-${index}`}
-                            className="flex h-9 w-9 items-center justify-center text-xs text-neutral-400"
-                          >
-                            …
-                          </span>
-                        ) : (
-                          <button
-                            key={page}
-                            onClick={() => goToPage(page)}
-                            className={`flex h-9 w-9 items-center justify-center border text-xs font-bold transition ${
-                              page === currentPage
-                                ? "border-[#171717] bg-[#171717] text-white"
-                                : "border-neutral-200 text-neutral-600 hover:border-[#d99f00]"
-                            }`}
-                          >
-                            {page}
-                          </button>
-                        ),
-                      )}
-
-                      <button
-                        onClick={() => goToPage(currentPage + 1)}
-                        disabled={currentPage === totalPages}
-                        className="flex h-9 w-9 items-center justify-center border border-neutral-200 text-neutral-600 transition hover:border-[#d99f00] disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-neutral-200"
-                        aria-label="Next page"
-                      >
-                        <ChevronRight className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </>
+              <ProductGrid
+                products={filteredProducts}
+                currentPage={currentPage}
+                totalPages={totalPages}
+                productsPerPage={PRODUCTS_PER_PAGE}
+                pageNumbers={pageNumbers}
+                onGoToPage={goToPage}
+              />
             )}
           </div>
         </section>
