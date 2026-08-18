@@ -3,15 +3,8 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import {
-  Phone,
-  Mail,
-  MapPin,
   ChevronRight,
   ArrowUpRight,
-  ShieldCheck,
-  Truck,
-  PackageCheck,
-  Wrench,
   X,
   CircleCheck,
   Loader2,
@@ -21,6 +14,8 @@ import {
 } from "lucide-react";
 import type { ApiProduct, Product } from "./types";
 import ProductGrid from "./components/ProductGrid";
+import Footer from "./components/Footer";
+import { TrustSection } from "./components/TrustSection";
 
 const PRODUCTS_PER_PAGE = 12;
 
@@ -721,169 +716,12 @@ export default function LandingPage() {
 
         {/* ================= TRUST ================= */}
 
-        <section className="bg-[#171717] text-white">
-          <div className="mx-auto max-w-[1400px] px-5 py-14 lg:px-6">
-            <div className="mb-10 max-w-xl">
-              <div className="mb-2 text-[10px] font-black uppercase tracking-[0.2em] text-[#f2b705]">
-                Why Hamza Enterprises
-              </div>
-
-              <h2 className="text-3xl font-black tracking-tight sm:text-4xl">
-                Built for people who
-                <br />
-                can&apos;t afford downtime.
-              </h2>
-            </div>
-
-            <div className="grid gap-px overflow-hidden border border-neutral-800 bg-neutral-800 sm:grid-cols-2 lg:grid-cols-4">
-              {[
-                {
-                  icon: ShieldCheck,
-                  title: "Quality checked",
-                  text: "Genuine and carefully selected OEM-alternative components.",
-                },
-                {
-                  icon: Truck,
-                  title: "Direct imports",
-                  text: "Parts sourced directly from established manufacturers.",
-                },
-                {
-                  icon: PackageCheck,
-                  title: "Bulk supply",
-                  text: "Fleet and contractor quantities available on request.",
-                },
-                {
-                  icon: Wrench,
-                  title: "Parts expertise",
-                  text: "Practical knowledge of earth-moving machinery components.",
-                },
-              ].map((item) => {
-                const Icon = item.icon;
-
-                return (
-                  <div
-                    key={item.title}
-                    className="bg-[#171717] p-7 transition hover:bg-[#202020]"
-                  >
-                    <Icon className="mb-6 h-7 w-7 text-[#f2b705]" />
-
-                    <h3 className="text-sm font-black uppercase tracking-wide">
-                      {item.title}
-                    </h3>
-
-                    <p className="mt-3 text-xs leading-6 text-neutral-500">
-                      {item.text}
-                    </p>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </section>
+        <TrustSection />
       </main>
 
       {/* ================= FOOTER ================= */}
 
-      <footer className="bg-[#111111] text-neutral-400">
-        <div className="mx-auto max-w-[1400px] px-5 py-14 lg:px-6">
-          <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
-            <div>
-              <div className="mb-5 flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center bg-[#f2b705]">
-                  <Wrench className="h-5 w-5 text-black" />
-                </div>
-
-                <div>
-                  <div className="text-sm font-black uppercase text-white">
-                    Hamza Enterprises
-                  </div>
-
-                  <div className="text-[8px] font-bold tracking-[0.15em]">
-                    HEAVY EQUIPMENT PARTS
-                  </div>
-                </div>
-              </div>
-
-              <p className="text-xs leading-6 text-neutral-500">
-                Heavy equipment parts, bearings and earth-moving machinery
-                components imported from China and supplied across Pakistan.
-              </p>
-
-              <div className="mt-6 space-y-3 text-xs">
-                <div className="flex items-center gap-3">
-                  <Phone className="h-4 w-4 text-[#f2b705]" />
-                  +92 335 9068724
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <Mail className="h-4 w-4 text-[#f2b705]" />
-                  hamzaenterprises062@gmail.com
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#f2b705]" />
-                  Khadda Market, Arslan Plaza, GT Road, Tarnol, Islamabad
-                </div>
-              </div>
-            </div>
-
-            {[
-              {
-                title: "Company",
-                links: [
-                  { label: "About Us", href: "/about" },
-                  { label: "Full Catalogue", href: "/" },
-                  { label: "Repair Service", href: "/repair-service" },
-                  { label: "Undercarriage", href: "/undercarriage" },
-                ],
-              },
-              {
-                title: "Customer Service",
-                links: [
-                  { label: "Help Center", href: "#" },
-                  { label: "Returns & Warranty", href: "#" },
-                  { label: "Shipping Information", href: "#" },
-                  { label: "FAQs", href: "#" },
-                ],
-              },
-              {
-                title: "Information",
-                links: [
-                  { label: "Privacy Policy", href: "#" },
-                  { label: "Terms of Service", href: "#" },
-                  { label: "Quality Guarantee", href: "#" },
-                  { label: "Contact Us", href: "#" },
-                ],
-              },
-            ].map((column) => (
-              <div key={column.title}>
-                <h4 className="mb-5 text-[10px] font-black uppercase tracking-[0.18em] text-white">
-                  {column.title}
-                </h4>
-
-                <ul className="space-y-3">
-                  {column.links.map((link) => (
-                    <li key={link.label}>
-                      <Link
-                        href={link.href}
-                        className="text-xs transition hover:text-[#f2b705]"
-                      >
-                        {link.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-12 flex flex-col justify-between gap-4 border-t border-neutral-800 pt-6 text-[10px] text-neutral-600 sm:flex-row">
-            <p>© 2026 Hamza Enterprises. All rights reserved.</p>
-
-            <p>Heavy Equipment Parts Supplier — Tarnol, Islamabad</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
