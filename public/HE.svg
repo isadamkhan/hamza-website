@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 420" width="600" height="630">
+  <!-- Dark background -->
+  <rect width="400" height="420" fill="#1a1a1a"/>
+  
+  <!-- HE Monogram - matching the exact style from the image -->
+  <g fill="#ffffff" transform="translate(95, 55)">
+    <path d="
+      M 0 0
+      H 36
+      V 58
+      H 68
+      V 0
+      H 104
+      V 160
+      H 68
+      V 95
+      H 36
+      V 160
+      H 0
+      Z
+      
+      M 120 0
+      H 165
+      C 210 0 240 28 240 68
+      C 240 95 222 118 192 128
+      C 222 138 245 165 245 200
+      C 245 240 210 265 165 265
+      H 120
+      V 225
+      H 160
+      C 185 225 202 208 202 185
+      C 202 162 185 145 160 145
+      H 120
+      V 120
+      H 165
+      C 188 120 205 103 205 80
+      C 205 57 188 40 165 40
+      H 120
+      Z
+    "/>
+  </g>
+  
+  <!-- Company name -->
+  <text 
+    x="200" 
+    y="370" 
+    font-family="Arial, Helvetica, sans-serif" 
+    font-size="22" 
+    font-weight="500" 
+    letter-spacing="5" 
+    fill="#ffffff" 
+    text-anchor="middle">
+    HAMZA ENTERPRISES
+  </text>
+</svg>

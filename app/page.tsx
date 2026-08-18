@@ -6,7 +6,6 @@ import {
   Phone,
   Mail,
   MapPin,
-  ShoppingCart,
   ChevronRight,
   ArrowUpRight,
   ShieldCheck,
@@ -62,7 +61,6 @@ export default function LandingPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [cartCount, setCartCount] = useState(0);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [mobileMenu, setMobileMenu] = useState(false);
@@ -240,12 +238,6 @@ export default function LandingPage() {
     }
 
     return `PKR ${price.toLocaleString("en-PK")}`;
-  };
-
-  const addToCart = (productName: string) => {
-    setCartCount((count) => count + 1);
-
-    alert(`Added ${productName} to cart!`);
   };
 
   /*

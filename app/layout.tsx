@@ -18,6 +18,9 @@ export const metadata: Metadata = {
   title: "Hamza Enterprises",
   description:
     "Hamza Enterprises is a leading provider of innovative solutions and services, dedicated to delivering excellence and value to our clients across various industries.",
+     icons: {
+    icon: "/HE.svg",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
