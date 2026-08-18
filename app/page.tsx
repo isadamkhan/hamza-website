@@ -19,6 +19,7 @@ import {
   AlertCircle,
   ChevronLeft,
   Search,
+  Menu,
 } from "lucide-react";
 
 type ApiProduct = {
@@ -65,6 +66,7 @@ export default function LandingPage() {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [mobileMenu, setMobileMenu] = useState(false);
+  const [mobileSearch, setMobileSearch] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
   /*
@@ -361,18 +363,68 @@ export default function LandingPage() {
                 </span>
               </a>
 
+              {/* Mobile: tap search icon to reveal input + jump to inventory */}
               <button
-                onClick={() => setMobileMenu(!mobileMenu)}
+                onClick={() => {
+                  setMobileSearch((v) => {
+                    const next = !v;
+                    if (next) scrollToProducts();
+                    return next;
+                  });
+                  setMobileMenu(false);
+                }}
                 className="flex h-11 w-11 items-center justify-center border border-neutral-200 md:hidden"
+                aria-label="Search parts"
               >
-                {mobileMenu ? (
+                {mobileSearch ? (
                   <X className="h-5 w-5" />
                 ) : (
                   <Search className="h-5 w-5" />
                 )}
               </button>
+
+              {/* Mobile: hamburger opens nav links (Repair Service / Undercarriage / About) */}
+              <button
+                onClick={() => {
+                  setMobileMenu(!mobileMenu);
+                  setMobileSearch(false);
+                }}
+                className="flex h-11 w-11 items-center justify-center border border-neutral-200 md:hidden"
+                aria-label="Toggle menu"
+              >
+                {mobileMenu ? (
+                  <X className="h-5 w-5" />
+                ) : (
+                  <Menu className="h-5 w-5" />
+                )}
+              </button>
             </div>
           </div>
+
+          {/* Mobile search bar */}
+          {mobileSearch && (
+            <div className="border-t border-neutral-200 py-3 md:hidden">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" />
+
+                <input
+                  autoFocus
+                  type="text"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      setDebouncedSearch(search);
+                      scrollToProducts();
+                      setMobileSearch(false);
+                    }
+                  }}
+                  placeholder="Search parts..."
+                  className="h-11 w-full border border-neutral-300 bg-neutral-50 pl-10 pr-4 text-sm outline-none focus:border-[#d99f00] focus:bg-white"
+                />
+              </div>
+            </div>
+          )}
 
           {/* Desktop navigation */}
 
@@ -417,32 +469,14 @@ export default function LandingPage() {
           </div>
         </div>
 
-        {/* Mobile menu */}
+        {/* Mobile menu — nav links only (search moved to its own icon) */}
 
         {mobileMenu && (
           <div className="border-t border-neutral-200 bg-white p-5 md:hidden">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" />
-
-              <input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    setDebouncedSearch(search);
-                    setMobileMenu(false);
-                    scrollToProducts();
-                  }
-                }}
-                placeholder="Search parts..."
-                className="h-11 w-full border border-neutral-300 bg-neutral-50 pl-10 text-sm outline-none"
-              />
-            </div>
-
             <Link
               href="/repair-service"
               onClick={() => setMobileMenu(false)}
-              className="mt-4 flex items-center justify-between border border-neutral-200 px-4 py-3 text-xs font-bold uppercase tracking-wide text-neutral-700 hover:border-[#d99f00] hover:text-[#d99f00]"
+              className="flex items-center justify-between border border-neutral-200 px-4 py-3 text-xs font-bold uppercase tracking-wide text-neutral-700 hover:border-[#d99f00] hover:text-[#d99f00]"
             >
               Repair Service
               <ChevronRight className="h-4 w-4" />
