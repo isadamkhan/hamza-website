@@ -412,6 +412,12 @@ export default function LandingPage() {
               </Link>
 
               <span className="ml-auto h-5 w-px bg-neutral-200" />
+              <Link
+                href="/contact"
+                className="text-neutral-500 transition hover:text-[#d99f00]"
+              >
+                Contact
+              </Link>
 
               <Link
                 href="/about"
@@ -452,7 +458,12 @@ export default function LandingPage() {
               Undercarriage
               <ChevronRight className="h-4 w-4" />
             </Link>
-
+            <Link
+              href="/contact"
+              className="mt-2 flex items-center justify-between border border-neutral-200 px-4 py-3 text-xs font-bold uppercase tracking-wide text-neutral-700 hover:border-[#d99f00] hover:text-[#d99f00]"
+            >
+              Contact
+            </Link>
             <Link
               href="/about"
               onClick={() => setMobileMenu(false)}

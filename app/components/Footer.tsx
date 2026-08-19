@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Phone, Mail, MapPin, Wrench } from "lucide-react";
+import MapEmbed from "./MapEmbed";
 
 const FOOTER_COLUMNS = [
   {
