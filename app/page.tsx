@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   ChevronRight,
   ArrowUpRight,
@@ -32,7 +33,12 @@ function WhatsAppIcon({ className }: { className?: string }) {
   );
 }
 
-export default function LandingPage() {
+function LandingPageContent() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const isFirstRender = useRef(true);
+
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -40,7 +46,10 @@ export default function LandingPage() {
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [mobileMenu, setMobileMenu] = useState(false);
   const [mobileSearch, setMobileSearch] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(() => {
+    const p = Number(searchParams.get("page"));
+    return p > 0 ? p : 1;
+  });
 
   /*
    * ============================
@@ -149,13 +158,28 @@ export default function LandingPage() {
       .map(({ product }) => product);
   }, [searchIndex, products, debouncedSearch]);
 
+  // Reset to page 1 (and clear ?page= from the URL) whenever the search
+  // term changes — but skip this on first render, since that would wipe
+  // out a ?page=N a visitor landed on directly (e.g. a shared link).
   useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
     setCurrentPage(1);
+
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("page");
+    router.replace(
+      params.toString() ? `${pathname}?${params.toString()}` : pathname,
+      { scroll: false },
+    );
 
     if (debouncedSearch.trim()) {
       scrollToProducts();
     }
-  }, [debouncedSearch, products.length]);
+  }, [debouncedSearch]);
 
   /*
    * ============================
@@ -171,8 +195,18 @@ export default function LandingPage() {
   const goToPage = (page: number) => {
     const clamped = Math.min(Math.max(page, 1), totalPages);
     setCurrentPage(clamped);
-
     scrollToProducts();
+
+    const params = new URLSearchParams(searchParams.toString());
+    if (clamped > 1) {
+      params.set("page", String(clamped));
+    } else {
+      params.delete("page");
+    }
+    router.push(
+      params.toString() ? `${pathname}?${params.toString()}` : pathname,
+      { scroll: false },
+    );
   };
 
   const pageNumbers = useMemo(() => {
@@ -734,5 +768,13 @@ export default function LandingPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function LandingPage() {
+  return (
+    <Suspense fallback={null}>
+      <LandingPageContent />
+    </Suspense>
   );
 }
